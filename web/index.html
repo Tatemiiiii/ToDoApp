@@ -58,40 +58,31 @@
   <script>
     window.onload = (event) => {
       const buttonSearch = document.getElementById('button-search');
-      buttonSearch.addEventListener('click', () => {
+      buttonSearch.addEventListener('click', async () => {
 
         const inputName = document.getElementById('input-name').value
 
-        axios.get(`https://pokeapi.co/api/v2/pokemon/${inputName}/`)
-          .then(function (response) {
-            // handle success
-            console.log(response);
-            const picture = document.getElementById('picture');
-            const pokeName = document.getElementById('pokename');
-            const type = document.getElementById('type');
-            const weight = document.getElementById('weight');
-            const height = document.getElementById('height');
-            picture.src = response.data.sprites.other['official-artwork'].front_default;
-            pokeName.textContent = response.data.name;
-            type.textContent = response.data.types[0].type.name;
-            weight.textContent = response.data.weight;
-            height.textContent = response.data.height;
+        try {
+          const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${inputName}/`);
+          console.log(response);
+          const picture = document.getElementById('picture');
+          const pokeName = document.getElementById('pokename');
+          const type = document.getElementById('type');
+          const weight = document.getElementById('weight');
+          const height = document.getElementById('height');
+          picture.src = response.data.sprites.other['official-artwork'].front_default;
+          pokeName.textContent = response.data.name;
+          type.textContent = response.data.types[0].type.name;
+          weight.textContent = response.data.weight;
+          height.textContent = response.data.height;
 
-            const result = document.getElementById('result');
-            result.hidden = false;
-            const defaultImage = document.getElementById('default');
-            defaultImage.hidden = true;
-
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .finally(function () {
-            // always executed
-          });
-
-
+          const result = document.getElementById('result');
+          result.hidden = false;
+          const defaultImage = document.getElementById('default');
+          defaultImage.hidden = true;
+        } catch (e) {
+          console.log(e);
+        }
 
       });
       console.log('page is fully loaded');
