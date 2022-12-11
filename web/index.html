@@ -1,0 +1,110 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+  <title>Pokemon</title>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-dark bg-dark mb-3">
+    <div class="container-fluid">
+      <a class="navbar-brand">Pokemon Search</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Content here -->
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Please enter PokemonID or PokemonName"
+        aria-label="Please enter PokemonID or PokemonName" aria-describedby="button-search" id="input-name">
+      <button class="btn btn-outline-secondary" type="button" id="button-search">
+        <i class="bi bi-search-heart"></i>
+      </button>
+    </div>
+
+    <div class="row justify-content-md-center">
+      <div class="col-5">
+        <div class="card" id="default"><img src="image/monsterball.gif" s="card-img-top" alt="..."></div>
+        <div class="card" hidden="true" id="result">
+          <img src="image/monsterball.gif" s="card-img-top" alt="..." id="picture">
+          <div class="card-body">
+            <h5 class="card-title" id="pokename">PokemonName</h5>
+            <p class="card-text"></p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><span class="badge bg-secondary">type</span><span id="type" class="ms-2"></span>
+            </li>
+            <li class="list-group-item"><span class="badge bg-secondary">weitght</span><span id="weight"
+                class="ms-2"></span></li>
+            <li class="list-group-item"><span class="badge bg-secondary">height</span><span id="height"
+                class="ms-2"></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script>
+    window.onload = (event) => {
+      const buttonSearch = document.getElementById('button-search');
+      buttonSearch.addEventListener('click', () => {
+
+        const inputName = document.getElementById('input-name').value
+
+        axios.get(`https://pokeapi.co/api/v2/pokemon/${inputName}/`)
+          .then(function (response) {
+            // handle success
+            console.log(response);
+            const picture = document.getElementById('picture');
+            const pokeName = document.getElementById('pokename');
+            const type = document.getElementById('type');
+            const weight = document.getElementById('weight');
+            const height = document.getElementById('height');
+            picture.src = response.data.sprites.other['official-artwork'].front_default;
+            pokeName.textContent = response.data.name;
+            type.textContent = response.data.types[0].type.name;
+            weight.textContent = response.data.weight;
+            height.textContent = response.data.height;
+
+            const result = document.getElementById('result');
+            result.hidden = false;
+            const defaultImage = document.getElementById('default');
+            defaultImage.hidden = true;
+
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .finally(function () {
+            // always executed
+          });
+
+
+
+      });
+      console.log('page is fully loaded');
+    };
+
+
+
+
+
+
+  </script>
+</body>
+
+
+
+</html>
