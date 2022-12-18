@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <title>Pokemon</title>
 </head>
 
@@ -31,7 +31,8 @@
 
     <div class="row justify-content-md-center">
       <div class="col-5">
-        <div class="card" id="default"><img src="image/monsterball.gif" s="card-img-top" alt="..."></div>
+        <div class="card animate__animated animate__zoomInDown" id="default"><img src="image/monsterball.gif"
+            s="card-img-top" alt="..."></div>
         <div class="card" hidden="true" id="result">
           <img src="image/monsterball.gif" s="card-img-top" alt="..." id="picture">
           <div class="card-body">
@@ -57,6 +58,13 @@
   <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
   <script>
     window.onload = (event) => {
+
+
+      const result = document.getElementById('result');
+      result.addEventListener('animationend', () => {
+        result.classList.remove('animate__animated', 'animate__zoomInUp');
+      });
+
       const buttonSearch = document.getElementById('button-search');
       buttonSearch.addEventListener('click', async () => {
 
@@ -76,10 +84,16 @@
           weight.textContent = response.data.weight;
           height.textContent = response.data.height;
 
-          const result = document.getElementById('result');
-          result.hidden = false;
           const defaultImage = document.getElementById('default');
-          defaultImage.hidden = true;
+          if (defaultImage.hidden == false)
+            defaultImage.addEventListener('animationend', () => {
+              defaultImage.hidden = true;
+              result.hidden = false;
+            });
+
+          defaultImage.classList.remove('animate__animated', 'animate__zoomInDown');
+          defaultImage.classList.add('animate__animated', 'animate__rotateOut');
+          result.classList.add('animate__animated', 'animate__zoomInUp');
         } catch (e) {
           console.log(e);
         }
