@@ -72,7 +72,9 @@
 
         try {
           const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${inputName}/`);
-          console.log(response);
+          //console.log(response);
+
+          //検索結果表示
           const picture = document.getElementById('picture');
           const pokeName = document.getElementById('pokename');
           const type = document.getElementById('type');
@@ -84,15 +86,18 @@
           weight.textContent = response.data.weight;
           height.textContent = response.data.height;
 
+          //モンスターボールが消えるアニメーション＋削除
           const defaultImage = document.getElementById('default');
-          if (defaultImage.hidden == false)
+          if (defaultImage.hidden == false) {
             defaultImage.addEventListener('animationend', () => {
               defaultImage.hidden = true;
               result.hidden = false;
             });
+            defaultImage.classList.remove('animate__animated', 'animate__zoomInDown');
+            defaultImage.classList.add('animate__animated', 'animate__rotateOut');
+          }
 
-          defaultImage.classList.remove('animate__animated', 'animate__zoomInDown');
-          defaultImage.classList.add('animate__animated', 'animate__rotateOut');
+          //検索したポケモンのカードのアニメーション
           result.classList.add('animate__animated', 'animate__zoomInUp');
         } catch (e) {
           console.log(e);
@@ -101,11 +106,6 @@
       });
       console.log('page is fully loaded');
     };
-
-
-
-
-
 
   </script>
 </body>
