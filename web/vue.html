@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Pokemon</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.1.5/dist/vuetify.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.1.5/dist/vuetify.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.1.96/css/materialdesignicons.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+  <div id="app">
+    <v-layout>
+      <v-app-bar :elevation="0" color="black" density="compact">
+        <v-app-bar-title>Pokemon Search</v-app-bar-title>
+      </v-app-bar>
+
+      <v-main>
+        <v-container>
+          <!--「:」はdata()と紐づく、「@」はmethodに紐づく-->
+          <v-text-field v-model="inputid" :loading="loading" density="compact" variant="solo" label="Search templates"
+            append-inner-icon="mdi-magnify" single-line hide-details @click:append-inner="onClick">
+          </v-text-field>
+          <v-container>
+            <v-scale-transition>
+              <v-row justify="center" v-if="pokemon === false">
+                <v-col cols="4">
+                  <v-card class="mx-auto">
+                    <v-img src="image/monsterball.gif" cover></v-img>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row justify="center" v-else>
+                <v-col cols="4">
+                  <v-card class="mx-auto">
+                    <v-img style="min-height: 256px;" class="align-end" :src="pokemon.image" cover>
+                      <v-card-title
+                        style="background-color: rgba(149,117,205,0.8); color: white;">{{pokemon.name}}</v-card-title>
+                    </v-img>
+                    <v-list density="compact">
+                      <v-list-item active-color="primary">
+                        <template v-slot:prepend>
+                          <v-icon icon="mdi-pokeball"></v-icon>
+                        </template>
+                        <v-list-item-title>{{pokemon.type}}</v-list-item-title>
+                      </v-list-item>
+
+                      <v-list-item active-color="primary">
+                        <template v-slot:prepend>
+                          <v-icon icon="mdi-weight-kilogram"></v-icon>
+                        </template>
+                        <v-list-item-title>{{pokemon.weight}} kg</v-list-item-title>
+                      </v-list-item>
+
+                      <v-list-item active-color="primary">
+                        <template v-slot:prepend>
+                          <v-icon icon="mdi-human-male-height-variant"></v-icon>
+                        </template>
+                        <v-list-item-title>{{pokemon.height}} cm</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-scale-transition>
+          </v-container>
+        </v-container>
+      </v-main>
+    </v-layout>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script>
+    const { createApp } = Vue //6行目の部分でVueの変数が作成されている
+    const { createVuetify } = Vuetify
+
+    const vuetify = createVuetify()
+
+    const app = createApp({
+      data() {
+        return {
+          inputid: '',
+          loading: false,
+          pokemon: false
+        }
+      },
+      methods: {
+        async onClick() {
+          this.loading = true
+
+          const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${this.inputid}/`);
+          console.log(response);
+
+          this.pokemon = {
+            name: response.data.name,
+            image: response.data.sprites.other['official-artwork'].front_default,
+            type: response.data.types[0].type.name,
+            weight: response.data.weight / 10,
+            height: response.data.height * 10
+          }
+          this.loading = false
+        },
+      }
+
+    }).use(vuetify).mount('#app') //#app は10行目と紐づいている
+  </script>
+</body>
+
+</html>
