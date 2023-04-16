@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>ToDoApp</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.1.5/dist/vuetify.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.1.5/dist/vuetify.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.1.96/css/materialdesignicons.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+  <div id="app">
+    <v-layout>
+      <v-app-bar :elevation="0" color="black" density="compact">
+        <v-app-bar-title>ToDoApp</v-app-bar-title>
+      </v-app-bar>
+      <v-main>
+        <v-container>
+          <v-row>
+            <v-col sm="4">
+              <v-card style="min-height: 128px;" class="mx-auto" color="teal-accent-4">
+                <v-card-title>
+                  ToDo
+                </v-card-title>
+                <v-card-text>
+                  <v-card class="my-2" v-for="todo in todoList" :key="todo.id">
+                    <v-card-title style="display: flex;">
+                      <span>{{todo.title}}</span>
+                      <v-spacer></v-spacer>
+                      <v-btn variant="plain" size="x-small" icon="mdi-pencil" @click="editTodo(todo)"></v-btn>
+                      <v-btn variant="plain" size="x-small" icon="mdi-arrow-right" @click="moveToDoing(todo)"> </v-btn>
+                    </v-card-title>
+                  </v-card>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn icon="mdi-plus" @click="openForm"></v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+            <v-col sm="4">
+              <v-card style="min-height: 128px;" class="mx-auto" color="teal-accent-4">
+                <v-card-title>
+                  Doing
+                </v-card-title>
+                <v-card-text>
+                  <v-card class="my-2" v-for="doing in doingList" :key="doing.id">
+                    <v-card-title style="display: flex;">
+                      <span>{{doing.title}}</span>
+                      <v-spacer></v-spacer>
+                      <v-btn variant="plain" size="x-small" icon="mdi-pencil" @click="editTodo(doing)"></v-btn>
+                      <v-btn variant="plain" size="x-small" icon="mdi-arrow-right" @click="moveToDone(doing)"> </v-btn>
+                    </v-card-title>
+                  </v-card>
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col sm="4">
+              <v-card style="min-height: 128px;" class="mx-auto" color="teal-accent-4">
+                <v-card-title>
+                  Done
+                </v-card-title>
+                <v-card-text>
+                  <v-card class="my-2" v-for="done in doneList" :key="done.id">
+                    <v-card-title style="display: flex;">
+                      <span> {{done.title}}</span>
+                      <v-spacer></v-spacer>
+                      <v-btn variant="plain" size="x-small" icon="mdi-pencil" @click="editTodo(done)"></v-btn>
+                    </v-card-title>
+                  </v-card>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <!--ダイアログ画面-->
+          <v-dialog v-model="dialog" persistent width="1024">
+            <v-card>
+              <v-toolbar color="teal-lighten-2" title="New task">
+                <v-btn icon dark @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-toolbar>
+              <v-card-text>
+                <v-row>
+                  <v-col>
+                    <v-text-field v-model="inputdata.title" label="title" required variant="outlined"></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-textarea v-model="inputdata.description" label="description" required
+                      variant="outlined"></v-textarea>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue-darken-1" variant="text" @click="addTodo">
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-container>
+      </v-main>
+
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script>
+    const { createApp } = Vue //6行目の部分でVueの変数が作成されている
+    const { createVuetify } = Vuetify
+
+    const vuetify = createVuetify()
+
+    const app = createApp({
+      data() {
+        return {
+          tasks: [],
+          inputdata: { id: "", title: "", description: "" },
+          dialog: false
+        }
+      },
+      computed: {
+        todoList() {
+          return this.tasks.filter(item => item.status === "TODO")
+        },
+        doingList() {
+          return this.tasks.filter(item => item.status === "DOING")
+        },
+        doneList() {
+          return this.tasks.filter(item => item.status === "DONE")
+        }
+      },
+      methods: {
+        openForm() {
+          this.inputdata = { id: "", title: "", description: "" }
+          this.dialog = true
+        },
+
+        addTodo() {
+
+          if (this.inputdata.id) {
+            const index = this.tasks.findIndex((element) => element.id === this.inputdata.id);
+            this.tasks[index] = { ...this.inputdata }
+          } else {
+            this.tasks.push({ ...this.inputdata, id: this.tasks.length + 1, status: "TODO" })
+          }
+          this.dialog = false
+        },
+
+        editTodo(todo) {
+          this.inputdata = { ...todo }
+          this.dialog = true
+        },
+        moveToDoing(todo) {
+          const index = this.tasks.findIndex((element) => element.id === todo.id);
+          this.tasks[index].status = "DOING"
+        },
+        moveToDone(doing) {
+          const index = this.tasks.findIndex((element) => element.id === doing.id);
+          this.tasks[index].status = "DONE"
+        }
+      }
+
+    }).use(vuetify).mount('#app') //#app は10行目と紐づいている
+  </script>
+</body>
+
+</html>
