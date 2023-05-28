@@ -29,14 +29,16 @@
                     <v-card-title style="display: flex;">
                       <span>{{todo.title}}</span>
                       <v-spacer></v-spacer>
-                      <v-btn variant="plain" size="x-small" icon="mdi-pencil" @click="editTodo(todo)"></v-btn>
-                      <v-btn variant="plain" size="x-small" icon="mdi-arrow-right" @click="moveToDoing(todo)"> </v-btn>
+                      <v-btn variant="plain" size="x-small" icon="mdi-pencil" @click="editTodo(todo)"
+                        :data-testid="'edit'+todo.id"></v-btn>
+                      <v-btn variant="plain" size="x-small" icon="mdi-arrow-right" @click="moveToDoing(todo)"
+                        :data-testid="'moveToDoing'+todo.id"> </v-btn>
                     </v-card-title>
                   </v-card>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn icon="mdi-plus" @click="openForm"></v-btn>
+                  <v-btn icon="mdi-plus" @click="openForm" data-testid="addTask"></v-btn>
                 </v-card-actions>
               </v-card>
             </v-col>
@@ -51,7 +53,8 @@
                       <span>{{doing.title}}</span>
                       <v-spacer></v-spacer>
                       <v-btn variant="plain" size="x-small" icon="mdi-pencil" @click="editTodo(doing)"></v-btn>
-                      <v-btn variant="plain" size="x-small" icon="mdi-arrow-right" @click="moveToDone(doing)"> </v-btn>
+                      <v-btn variant="plain" size="x-small" icon="mdi-arrow-right" @click="moveToDone(doing)"
+                        :data-testid="'moveToDone'+doing.id"> </v-btn>
                     </v-card-title>
                   </v-card>
                 </v-card-text>
@@ -86,19 +89,20 @@
               <v-card-text>
                 <v-row>
                   <v-col>
-                    <v-text-field v-model="inputdata.title" label="title" required variant="outlined"></v-text-field>
+                    <v-text-field v-model="inputdata.title" label="title" required variant="outlined"
+                      data-testid="editTitle"></v-text-field>
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col>
-                    <v-textarea v-model="inputdata.description" label="description" required
-                      variant="outlined"></v-textarea>
+                    <v-textarea v-model="inputdata.description" label="description" required variant="outlined"
+                      data-testid="editDescription"></v-textarea>
                   </v-col>
                 </v-row>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="addTodo">
+                <v-btn color="blue-darken-1" variant="text" @click="addTodo" data-testid="save">
                   Save
                 </v-btn>
               </v-card-actions>
