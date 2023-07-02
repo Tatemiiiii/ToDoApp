@@ -5,14 +5,25 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
 	"features": {
-		"ghcr.io/devcontainers/features/aws-cli:1": {}
+		"ghcr.io/devcontainers/features/aws-cli:1": {},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
 	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "sudo apt update -y && sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-ipafont && yarn && yarn cypress install"
+	"postCreateCommand": "sudo apt update -y && sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-ipafont && yarn && yarn cypress install",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"amazonwebservices.aws-toolkit-vscode",
+				"dbaeumer.vscode-eslint",
+				"GitHub.vscode-pull-request-github",
+				"oderwat.indent-rainbow"
+			]
+		}
+	}
 	// Configure tool-specific properties.
 	// "customizations": {},
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
